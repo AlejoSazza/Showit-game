@@ -42,8 +42,6 @@
     speed: 6
   };
 
-  let gameOver = false;
-
   function drawDino() {
     ctx.fillStyle = "#444";
     ctx.fillRect(dino.x, dino.y, dino.width, dino.height);
@@ -54,17 +52,8 @@
     ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
   }
 
-  function drawGameOver() {
-    ctx.fillStyle = "red";
-    ctx.font = "30px Arial";
-    ctx.textAlign = "center";
-    ctx.fillText("¡Game Over!", canvas.width / 2, canvas.height / 2);
-  }
-
   function update() {
-    if (gameOver) return;
-
-    // Dino gravity
+    // Dino gravedad
     dino.y += dino.dy;
     dino.dy += dino.gravity;
 
@@ -74,22 +63,20 @@
       dino.grounded = true;
     }
 
-    // Move obstacle
+    // Mover obstáculo
     obstacle.x -= obstacle.speed;
     if (obstacle.x + obstacle.width < 0) {
       obstacle.x = canvas.width + Math.random() * 300;
     }
 
-    // Collision
+    // Colisión (pero no pasa nada)
     if (
       dino.x < obstacle.x + obstacle.width &&
       dino.x + dino.width > obstacle.x &&
       dino.y < obstacle.y + obstacle.height &&
       dino.y + dino.height > obstacle.y
     ) {
-      gameOver = true;
-      dino.dy = 0;
-      obstacle.speed = 0;
+      // Nada sucede, colisión ignorada
     }
   }
 
@@ -97,17 +84,16 @@
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawDino();
     drawObstacle();
-    if (gameOver) drawGameOver();
   }
 
   function loop() {
     update();
     draw();
-    if (!gameOver) requestAnimationFrame(loop);
+    requestAnimationFrame(loop);
   }
 
   document.addEventListener("keydown", (e) => {
-    if (e.code === "Space" && dino.grounded && !gameOver) {
+    if (e.code === "Space" && dino.grounded) {
       dino.dy = dino.jumpPower;
       dino.grounded = false;
     }
