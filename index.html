@@ -54,6 +54,13 @@
     ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
   }
 
+  function drawGameOver() {
+    ctx.fillStyle = "red";
+    ctx.font = "30px Arial";
+    ctx.textAlign = "center";
+    ctx.fillText("¡Game Over!", canvas.width / 2, canvas.height / 2);
+  }
+
   function update() {
     if (gameOver) return;
 
@@ -81,8 +88,8 @@
       dino.y + dino.height > obstacle.y
     ) {
       gameOver = true;
-      alert("¡Game Over!");
-      location.reload();
+      dino.dy = 0;
+      obstacle.speed = 0;
     }
   }
 
@@ -90,6 +97,7 @@
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawDino();
     drawObstacle();
+    if (gameOver) drawGameOver();
   }
 
   function loop() {
@@ -99,7 +107,7 @@
   }
 
   document.addEventListener("keydown", (e) => {
-    if (e.code === "Space" && dino.grounded) {
+    if (e.code === "Space" && dino.grounded && !gameOver) {
       dino.dy = dino.jumpPower;
       dino.grounded = false;
     }
